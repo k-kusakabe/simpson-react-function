@@ -17,7 +17,7 @@ const Character = (props) => {
       />
       <Quote quote={quote} />
       <Image image={image} character={character} />
-      <Delete />
+      <Delete onDelete={onDelete} id={id} />
     </div>
   );
 };

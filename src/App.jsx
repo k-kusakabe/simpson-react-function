@@ -50,6 +50,8 @@ const App = () => {
 
   if (!simpsons) return <Loading />;
 
+  if (simpsons.length === 0) return <p>You deleted everything!</p>;
+
   //calculate the total
   let total = 0;
   simpsons.forEach((char) => {
