@@ -6,6 +6,8 @@ import "./App.css";
 
 const App = () => {
   const [simpsons, setSimpsons] = useState();
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("");
 
   const getData = async () => {
     try {
@@ -48,6 +50,14 @@ const App = () => {
     setSimpsons(_simpsons);
   };
 
+  const onInput = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const onSort = (e) => {
+    setSort(e.target.value);
+  };
+
   if (!simpsons) return <Loading />;
 
   if (simpsons.length === 0) return <p>You deleted everything!</p>;
@@ -58,11 +68,39 @@ const App = () => {
     if (char.liked) total++;
   });
 
+  //filter by name
+  let _simpsons = [...simpsons];
+
+  if (search) {
+    _simpsons = _simpsons.filter((item) => {
+      return item.character.toLowerCase().includes(search.toLowerCase());
+    });
+  }
+
+  //sort by name
+  if (sort === "asc") {
+    _simpsons.sort((itemOne, itemTwo) => {
+      if (itemOne.character > itemTwo.character) return 1;
+      if (itemOne.character < itemTwo.character) return -1;
+    });
+  } else if (sort === "desc") {
+    _simpsons.sort((itemOne, itemTwo) => {
+      if (itemOne.character > itemTwo.character) return -1;
+      if (itemOne.character < itemTwo.character) return 1;
+    });
+  }
+
   return (
     <>
       <h1>Total no of liked chars #{total}</h1>
+      <input onInput={onInput} type="text" />
+      <select onInput={onSort}>
+        <option value=""></option>
+        <option value="asc">Asc</option>
+        <option value="desc">Desc</option>
+      </select>
       <Simpsons
-        simpsons={simpsons}
+        simpsons={_simpsons}
         onLikeToggle={onLikeToggle}
         onDelete={onDelete}
       />
@@ -71,72 +109,3 @@ const App = () => {
 };
 
 export default App;
-
-// import React, { Component } from "react"<></>;
-// import axios from "axios";
-// import Loading from "./components/Loading";
-// import Simpsons from "./components/Simpsons";
-// import "./App.css";
-
-// class App extends Component {
-//   state = {};
-
-//   async componentDidMount() {
-//     const { data } = await axios.get(
-//       `https://thesimpsonsquoteapi.glitch.me/quotes?count=10`
-//     );
-
-//     //fixed the api data to have unique id
-//     data.forEach((element, index) => {
-//       element.id = index + Math.random();
-//     });
-
-//     this.setState({ simpsons: data });
-//   }
-
-//   onLikeToggle = (id) => {
-//     const indexOf = this.state.simpsons.findIndex((char) => {
-//       return char.id === id;
-//     });
-//     const simpsons = [...this.state.simpsons];
-//     //invert if liked or not liked
-//     simpsons[indexOf].liked = !simpsons[indexOf].liked;
-//     this.setState({ simpsons });
-//   };
-
-//   onDelete = (id) => {
-//     const indexOf = this.state.simpsons.findIndex((char) => {
-//       return char.id === id;
-//     });
-//     const simpsons = [...this.state.simpsons];
-//     simpsons.splice(indexOf, 1);
-//     this.setState({ simpsons });
-//   };
-
-//   render() {
-//     const { simpsons } = this.state;
-
-//     if (!simpsons) return <Loading />;
-
-//     if (simpsons.length === 0) return <p>You deleted everything!</p>;
-
-//     //calculate the total
-//     let total = 0;
-//     simpsons.forEach((char) => {
-//       if (char.liked) total++;
-//     });
-
-//     return (
-//       <>
-//         <h1>Total no of liked chars #{total}</h1>
-//         <Simpsons
-//           simpsons={simpsons}
-//           onDelete={this.onDelete}
-//           onLikeToggle={this.onLikeToggle}
-//         />
-//       </>
-//     );
-//   }
-// }
-
-// export default App;
