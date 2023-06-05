@@ -12,6 +12,12 @@ const App = () => {
       const { data } = await axios.get(
         `https://thesimpsonsquoteapi.glitch.me/quotes?count=10`
       );
+
+      //fixed the api data to have unique id
+      data.forEach((element, index) => {
+        element.id = index + Math.random();
+      });
+
       setSimpsons(data);
     } catch (error) {
       console.log(error);
@@ -23,15 +29,40 @@ const App = () => {
     getData();
   }, []);
 
+  const onLikeToggle = (id) => {
+    const indexOf = simpsons.findIndex((char) => {
+      return char.id === id;
+    });
+    const _simpsons = [...simpsons];
+    //invert if liked or not liked
+    _simpsons[indexOf].liked = !_simpsons[indexOf].liked;
+    setSimpsons(_simpsons);
+  };
+
+  const onDelete = (id) => {
+    const indexOf = simpsons.findIndex((char) => {
+      return char.id === id;
+    });
+    const _simpsons = [...simpsons];
+    _simpsons.splice(indexOf, 1);
+    setSimpsons(_simpsons);
+  };
+
   if (!simpsons) return <Loading />;
+
+  //calculate the total
+  let total = 0;
+  simpsons.forEach((char) => {
+    if (char.liked) total++;
+  });
 
   return (
     <>
-      <h1>Total no of liked chars #</h1>
+      <h1>Total no of liked chars #{total}</h1>
       <Simpsons
         simpsons={simpsons}
-        // onDelete={onDelete}
-        // onLikeToggle={onLikeToggle}
+        onLikeToggle={onLikeToggle}
+        onDelete={onDelete}
       />
     </>
   );
