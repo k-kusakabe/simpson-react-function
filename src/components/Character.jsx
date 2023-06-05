@@ -2,6 +2,7 @@ import React from "react";
 import Name from "./Name";
 import Quote from "./Quote";
 import Image from "./Image";
+import Delete from "./Delete";
 
 const Character = (props) => {
   const { character, quote, image, id, characterDirection, liked } = props.item;
@@ -16,7 +17,7 @@ const Character = (props) => {
       />
       <Quote quote={quote} />
       <Image image={image} character={character} />
-      {/* <Delete onDelete={onDelete} id={id} /> */}
+      <Delete />
     </div>
   );
 };
